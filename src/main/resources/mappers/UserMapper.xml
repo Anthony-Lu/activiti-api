@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fairy.activiti.dao.UserDao">
+	<resultMap id="userResultMap" type="com.fairy.activiti.entity.User">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="password" column="password"/>
+		<result property="email" column="email"/>
+		<result property="role" column="role"/>
+		<result property="managerId" column="manager_id"/>
+		<association property="manager" javaType="com.fairy.activiti.entity.User">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password"/>
+			<result property="email" column="email"/>
+			<result property="role" column="role"/>
+			<result property="managerId" column="manager_id"/>
+		</association>
+	</resultMap>
+	
+	<!-- select * from user where id=(select manager_id from user tt where tt.id=5) -->
+	<!-- 根据用户名查询用户信息 -->
+	<select id="findUserByName" resultMap="userResultMap">
+		select * from user where name = #{name}
+	</select>
+	
+	<!-- 根据用户id查询上级领导信息 -->
+	<select id="findManager" parameterType="java.lang.String" resultMap="userResultMap">
+		select * from user where id = (select manager_id from user tt where tt.name = #{name})
+	</select>
+	<!--查询boss信息 -->
+	<select id="findBoss" resultMap="userResultMap">
+		select * from user where manager_id is NULL
+	</select>
+</mapper>

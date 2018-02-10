@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.fairy.activiti.dao.LeaveBillDao">
+	<resultMap id="leaveBillResultMap" type="com.fairy.activiti.entity.LeaveBill">
+		<result property="id" column="id" />
+		<result property="userId" column="user_id" />
+		<result property="leaveDate" column="leave_date"/>
+		<result property="days" column="days"/>
+		<result property="content" column="content"/>
+		<result property="state" column="state"/>
+		<result property="remark" column="remark"/>
+		<association property="user" javaType="com.fairy.activiti.entity.User">
+			<result property="id" column="id" />
+			<result property="name" column="name" />
+			<result property="password" column="password"/>
+			<result property="email" column="email"/>
+			<result property="role" column="role"/>
+			<result property="managerId" column="manager_id"/>
+		</association>
+	</resultMap>
+	
+	<select id="findLeaveBillList" resultMap="leaveBillResultMap">
+		SELECT t1.*,t2.name from t_leave t1 LEFT JOIN user t2 on t1.user_id = t2.id 
+	</select>
+	<select id="findLeaveBillById" parameterType="java.lang.String" resultMap="leaveBillResultMap">
+		select * from t_leave where id = #{id}
+	</select>
+	<insert id="saveLeaveBill">
+		insert into t_leave 
+		values(
+			#{id},#{leaveDate},#{days},#{content},#{state},#{remark},#{userId}
+		)
+	</insert>
+	<update id="updateLeaveBill" parameterType="com.fairy.activiti.entity.LeaveBill">
+		update t_leave 
+		<set>
+			<if test="id != null and id != ''">
+				id = #{id},
+			</if>
+			<if test="leaveDate != null">
+				leave_date= #{leaveDate},
+			</if>
+			<if test="days != null">
+				days = #{days},
+			</if>
+			<if test="content != null and content != ''">
+				content = #{content},
+			</if>
+			<if test="state != null">
+				state = #{state},
+			</if>
+			<if test="remark != null and remark != ''">
+				remark = #{remark},
+			</if>
+			<if test="userId != null">
+				user_id = #{userId}
+			</if>
+		</set>
+			where id = #{id}
+	</update>
+	<delete id="deleteLeaveBillById" flushCache="true">
+		delete from t_leave where id = #{id}
+	</delete>
+</mapper>
