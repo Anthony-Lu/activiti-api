@@ -8,8 +8,13 @@ package com.fairy.activiti.constant;
  */
 public class LeaveBillConstant {
 
+	private LeaveBillConstant() {
+		
+	}
+	
 	public static final int START_ENTRY = 0;// 初始状态
+	
 	public static final int AUDIT_ING = 1;// 审核中
+	
 	public static final int AUDIT_COMPLETE = 2;// 审核完成
-
 }

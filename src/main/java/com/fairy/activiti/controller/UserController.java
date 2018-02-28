@@ -4,7 +4,10 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fairy.activiti.entity.User;
 import com.fairy.activiti.service.UserService;
@@ -81,5 +84,17 @@ public class UserController {
 	public String logout(HttpSession session) {
 		session.setAttribute("user", null);
 		return "login";
+	}
+	
+	/**
+	 * test
+	 * @param user
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/getParams",consumes="application/json",method = RequestMethod.POST)
+	public String getParams(@RequestBody(required=false) User user){
+		System.out.println("id=" + user.getId() + ",name=" + user.getName() + ",password=" + user.getPassword());
+		return null;
 	}
 }

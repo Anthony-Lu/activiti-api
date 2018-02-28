@@ -103,19 +103,20 @@ public class WorkflowController {
 	 */
 	@RequestMapping("/viewImg")
 	public String viewImg(String deploymentId,String imgName,HttpServletRequest request,HttpServletResponse resp) {
-		InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
-		OutputStream outputStream = null ;
+		//InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
+		//OutputStream outputStream = null ;
 		int len = -1;
 		byte[] b = new byte[1024];
-		try {
-			outputStream = resp.getOutputStream();
+		try(InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
+			OutputStream outputStream = resp.getOutputStream()){
+			//outputStream = resp.getOutputStream();
 			while((len = inputStream.read(b)) != -1) {
 				outputStream.write(b, 0, len);
 			}
 		} catch (IOException e) {
 			logger.error("读取流程图片异常>>>" + e);
 			e.printStackTrace();
-		}finally {
+		}/*finally {
 			try {
 				outputStream.close();
 				inputStream.close();
@@ -123,7 +124,7 @@ public class WorkflowController {
 				logger.error("读取流程图片异常>>>" + e);
 				e.printStackTrace();
 			}
-		}
+		}*/
 		return null;
 	}
 	

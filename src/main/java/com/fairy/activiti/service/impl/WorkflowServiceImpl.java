@@ -31,6 +31,8 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fairy.activiti.bean.WorkflowBean;
 import com.fairy.activiti.constant.LeaveBillConstant;
@@ -47,6 +49,9 @@ import com.fairy.activiti.util.StringUtil;
  */
 @Service
 public class WorkflowServiceImpl implements WorkflowService {
+	private static final String PROCESS_DEFINITON_KEY = "myProcess";
+	
+	private static final Logger logger = LoggerFactory.getLogger(WorkflowServiceImpl.class);
 
 	@Autowired
 	private RuntimeService runtimeService;
@@ -63,8 +68,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 	@Autowired
 	private IdentityService identityService;
 
-	private static final String PROCESS_DEFINITON_KEY = "myProcess";
-
+	
 	/**
 	 * 部署流程定义 （zip格式）
 	 */
@@ -76,6 +80,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 			repositoryService.createDeployment().name(filename).addZipInputStream(zipInputStream).deploy();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+			logger.error("部署流程定义出错>>>>>" , e);
 		}
 	}
 
@@ -94,8 +99,11 @@ public class WorkflowServiceImpl implements WorkflowService {
 	@Override
 	public List<ProcessDefinition> findProcessDefinitionList() {
 		// 根据版本号升序排列
-		List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
-				.orderByProcessDefinitionVersion().asc().list();
+		List<ProcessDefinition> list = repositoryService
+				.createProcessDefinitionQuery()
+				.orderByProcessDefinitionVersion()
+				.asc()
+				.list();
 		return list;
 	}
 
@@ -230,6 +238,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 		String processInstanceId = task.getProcessInstanceId();
 		// 设置审批人
 		Authentication.setAuthenticatedUserId(SessionUtil.get().getName());
+		//identityService.setAuthenticatedUserId("");
 		// 添加批注信息
 		taskService.addComment(taskId, processInstanceId, comment);
 		Map<String, Object> variables = new HashMap<>();
