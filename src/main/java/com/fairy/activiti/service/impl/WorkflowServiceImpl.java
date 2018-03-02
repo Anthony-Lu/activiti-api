@@ -10,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipInputStream;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -33,6 +30,8 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fairy.activiti.bean.WorkflowBean;
 import com.fairy.activiti.constant.LeaveBillConstant;
@@ -79,8 +78,9 @@ public class WorkflowServiceImpl implements WorkflowService {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
 			repositoryService.createDeployment().name(filename).addZipInputStream(zipInputStream).deploy();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			logger.error("部署流程定义出错>>>>>" , e);
+			/*e.printStackTrace();
+			logger.error("部署流程定义出错>>>>>" , e);*/
+			throw new RuntimeException("部署流程定义出错", e);
 		}
 	}
 

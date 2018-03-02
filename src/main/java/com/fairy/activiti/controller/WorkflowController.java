@@ -17,6 +17,7 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
+import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fairy.activiti.bean.WorkflowBean;
@@ -51,11 +53,20 @@ public class WorkflowController {
 	public String index() {
 		return "workflow/NewFile";
 	}
+	
+	/**
+	 * 流程上传页面
+	 * @return
+	 */
+	@RequestMapping("/toDeployProcess")
+	public String toDeployProcess() {
+		return "workflow/NewFile";
+	}
+	
 	/**
 	 * 部署管理首页
 	 * @return
 	 */
-	
 	@RequestMapping("/toDeployHome")
 	@ResponseBody
 	public String toDeployHome() {
@@ -76,10 +87,27 @@ public class WorkflowController {
 	 * @param file
 	 * @return
 	 */
+	@ResponseBody
 	@RequestMapping("/deploy")
-	public String deploy(MultipartFile file) {
-		workflowService.saveNewDeploye((File) file, file.getName());
-		return "wordflow/workflow";
+	public String deploy(MultipartFile myProcessFile) {
+		logger.info("开始部署名为[{}]的流程定义",myProcessFile.getName());
+		
+		CommonsMultipartFile cf = (CommonsMultipartFile)myProcessFile;   
+        DiskFileItem fi = (DiskFileItem) cf.getFileItem();  
+        File file = fi.getStoreLocation();  
+        //手动创建临时文件  
+        File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") +   
+                    file.getName());  
+		//System.out.println(tmpFile.toString());
+		try {
+			myProcessFile.transferTo(tmpFile);  
+			workflowService.saveNewDeploye(tmpFile, myProcessFile.getName());
+		} catch (Exception e) {
+			logger.error("流程部署出错>>>>>>>>>>",e);
+		}
+		logger.info("部署完成\"");
+		//return "wordflow/workflow";
+		return "success";
 	}
 	
 	/**
@@ -105,7 +133,7 @@ public class WorkflowController {
 	public String viewImg(String deploymentId,String imgName,HttpServletRequest request,HttpServletResponse resp) {
 		//InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
 		//OutputStream outputStream = null ;
-		int len = -1;
+		int len = 0;
 		byte[] b = new byte[1024];
 		try(InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
 			OutputStream outputStream = resp.getOutputStream()){

@@ -14,10 +14,14 @@ public class EnumTest {
 			
 		}*/
 		
+		//Mode.OFF;
+		//new User()
+		
 		for (Season season : values) {
 			if(season.getKey() == key) {
 				System.out.println(season.getValue());
 			}
 		}
 	}
+	
 }

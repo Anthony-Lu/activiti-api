@@ -1,8 +1,10 @@
 package com.fairy.activiti;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.zip.ZipInputStream;
 
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
@@ -79,6 +81,15 @@ public class ActivitiTest{
 		ZipInputStream zipInputStream = new ZipInputStream(in);
 		repositoryService.createDeployment().addZipInputStream(zipInputStream).deploy();
     }*/
+    
+    @Test
+    public void deployByZip(){
+    	InputStream in = this.getClass().getClassLoader().getResourceAsStream("MyProcess.zip");
+		ZipInputStream zipInputStream = new ZipInputStream(in);
+		Deployment deploy = repositoryService.createDeployment().name("zip格式部署流程定义").addZipInputStream(zipInputStream).deploy();
+		System.out.println("部署id为：" + deploy.getId() + ",部署名称为：" + deploy.getName());
+		
+    }
     
 	/**
 	 * 启动流程实例并设置流程变量

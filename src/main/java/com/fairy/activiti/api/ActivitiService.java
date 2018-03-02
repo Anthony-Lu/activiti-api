@@ -13,8 +13,12 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 
+/**
+ * 
+ * @author luxuebing
+ * @date 2018/02/28下午2:09:10
+ */
 public interface ActivitiService {
-
 	/**
 	 * 部署流程定义（zip格式）
 	 * 

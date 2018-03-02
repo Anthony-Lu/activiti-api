@@ -30,7 +30,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.fairy.activiti.util.StringUtil;
-
+/**
+ * 
+ * @author luxuebing
+ * @date 2018/02/28下午2:09:00
+ */
 @Service
 public class ActivitiServiceImpl implements ActivitiService {
 

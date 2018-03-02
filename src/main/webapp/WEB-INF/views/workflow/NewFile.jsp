@@ -8,5 +8,10 @@
 </head>
 <body>
 	<p>Hello,this is index jsp</p>
+	<form action="/workflow/deploy" method="post" enctype="multipart/form-data">
+	请选择文件：<input type="file" name="myProcessFile">
+	<input type="submit" value="提交">
+	</form>
+	
 </body>
 </html>
