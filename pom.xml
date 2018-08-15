@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.fairy</groupId>
-	<artifactId>activiti-test-lxb</artifactId>
+	<artifactId>activiti-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>activiti-test-lxb</name>
+	<name>activiti-api</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>

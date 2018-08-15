@@ -1,21 +1,13 @@
 package com.fairy.activiti.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipInputStream;
-
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import com.fairy.activiti.bean.WorkflowBean;
+import com.fairy.activiti.constant.LeaveBillConstant;
+import com.fairy.activiti.dao.LeaveBillDao;
+import com.fairy.activiti.entity.LeaveBill;
+import com.fairy.activiti.service.WorkflowService;
+import com.fairy.activiti.util.SessionUtils;
+import com.fairy.activiti.util.StringUtils;
+import org.activiti.engine.*;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.identity.Authentication;
@@ -33,13 +25,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fairy.activiti.bean.WorkflowBean;
-import com.fairy.activiti.constant.LeaveBillConstant;
-import com.fairy.activiti.dao.LeaveBillDao;
-import com.fairy.activiti.entity.LeaveBill;
-import com.fairy.activiti.service.WorkflowService;
-import com.fairy.activiti.util.SessionUtil;
-import com.fairy.activiti.util.StringUtil;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipInputStream;
 
 /**
  * 
@@ -139,9 +133,9 @@ public class WorkflowServiceImpl implements WorkflowService {
 		leaveBillDao.updateLeaveBill(leaveBill);
 		HashMap<String, Object> variables = new HashMap<>();
 		// 从session中取出当前登录人，设置为提交申请任务的办理人
-		identityService.setAuthenticatedUserId(SessionUtil.get().getName());
+		identityService.setAuthenticatedUserId(SessionUtils.get().getName());
 
-		variables.put("applyUser", SessionUtil.get());
+		variables.put("applyUser", SessionUtils.get());
 		// 设置请假天数
 		Integer days = leaveBill.getDays();
 		variables.put("days", days);
@@ -213,7 +207,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 		for (PvmTransition pvmTransition : list) {
 			// 获取连线名称
 			String name = (String) pvmTransition.getProperty("name");
-			if (StringUtil.isNotEmpty(name)) {
+			if (StringUtils.isNotEmpty(name)) {
 				outComeList.add(name);
 			} else {
 				outComeList.add("默认提交");
@@ -237,7 +231,7 @@ public class WorkflowServiceImpl implements WorkflowService {
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = task.getProcessInstanceId();
 		// 设置审批人
-		Authentication.setAuthenticatedUserId(SessionUtil.get().getName());
+		Authentication.setAuthenticatedUserId(SessionUtils.get().getName());
 		//identityService.setAuthenticatedUserId("");
 		// 添加批注信息
 		taskService.addComment(taskId, processInstanceId, comment);

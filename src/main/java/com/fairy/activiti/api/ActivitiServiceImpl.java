@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fairy.activiti.util.StringUtil;
+import com.fairy.activiti.util.StringUtils;
 /**
  * 
  * @author luxuebing
@@ -60,7 +60,7 @@ public class ActivitiServiceImpl implements ActivitiService {
 			ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(file));
 			repositoryService.createDeployment().name(fileName).addZipInputStream(zipInputStream);
 		} catch (FileNotFoundException e) {
-			logger.error("部署名称为[{}]的流程出错", fileName, e);
+			logger.error("部署名称为{}的流程出错", fileName, e);
 		}
 	}
 
@@ -230,7 +230,7 @@ public class ActivitiServiceImpl implements ActivitiService {
 		List<PvmTransition> list = activity.getOutgoingTransitions();
 		for (PvmTransition pvmTransition : list) {
 			String name = (String) pvmTransition.getProperty("name");
-			if (StringUtil.isNotEmpty(name)) {
+			if (StringUtils.isNotEmpty(name)) {
 				outComeList.add(name);
 			}
 		}

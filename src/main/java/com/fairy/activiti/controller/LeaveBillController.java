@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fairy.activiti.entity.LeaveBill;
 import com.fairy.activiti.service.LeaveBillService;
-import com.fairy.activiti.util.FastJsonUtil;
+import com.fairy.activiti.util.FastJsonUtils;
 
 /**
  * 请假单处理
@@ -41,7 +41,7 @@ public class LeaveBillController {
 	@RequestMapping("/getLeaveBillList")
 	public String getLeaveBillList() {
 		List<LeaveBill> list = service.findLeaveBillList();
-		return FastJsonUtil.serializeToJSON(list);
+		return FastJsonUtils.serializeToJSON(list);
 	}
 	
 	/**
@@ -68,10 +68,10 @@ public class LeaveBillController {
 			service.saveLeaveBill(bill);
 			map.put("success", true);
 		} catch (Exception e) {
-			logger.error("保存请假申请异常>>>" + e);
+			logger.error("保存请假申请异常", e);
 			e.printStackTrace();
 		}
-		return FastJsonUtil.serializeToJSON(map);
+		return FastJsonUtils.serializeToJSON(map);
 	}
 
 	/**
@@ -88,9 +88,9 @@ public class LeaveBillController {
 			service.deleteLeaveBillById(id);
 			map.put("success", true);
 		} catch (Exception e) {
-			logger.error("删除请假申请异常>>>" + e);
+			logger.error("删除请假申请异常" , e);
 			e.printStackTrace();
 		}
-		return FastJsonUtil.serializeToJSON(map);
+		return FastJsonUtils.serializeToJSON(map);
 	}
 }

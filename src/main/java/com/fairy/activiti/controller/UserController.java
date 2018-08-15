@@ -32,9 +32,10 @@ public class UserController {
 	public String toLogin(){
 		return "login";
 	}
+
 	/**
-	 * 登录
-	 * @param username
+	 *
+	 * @param name
 	 * @param session
 	 * @return
 	 */

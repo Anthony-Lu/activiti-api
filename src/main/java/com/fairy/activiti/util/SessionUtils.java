@@ -12,7 +12,7 @@ import com.fairy.activiti.entity.User;
  * @author luxuebing
  * @date 2018/02/06下午9:59:52
  */
-public class SessionUtil {
+public class SessionUtils {
 	
 	private static final String GLOBLE_SESSION_KEY = "user";
 	
