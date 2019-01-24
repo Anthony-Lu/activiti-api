@@ -2,6 +2,7 @@ package com.fairy.activiti.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +24,7 @@ import com.fairy.activiti.util.FastJsonUtils;
 @RequestMapping("/leaveBill")
 public class LeaveBillController {
 
-	public static Logger logger = LoggerFactory.getLogger(LeaveBillController.class);
+	public static final Logger logger = LoggerFactory.getLogger(LeaveBillController.class);
 	@Autowired
 	private LeaveBillService service;
 
@@ -63,7 +64,7 @@ public class LeaveBillController {
 	@ResponseBody
 	@RequestMapping("/saveBill")
 	public String saveBill(LeaveBill bill) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		try {
 			service.saveLeaveBill(bill);
 			map.put("success", true);
@@ -83,7 +84,7 @@ public class LeaveBillController {
 	@ResponseBody
 	@RequestMapping("/deleteBill")
 	public String deleteBill(String id) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		try {
 			service.deleteLeaveBillById(id);
 			map.put("success", true);

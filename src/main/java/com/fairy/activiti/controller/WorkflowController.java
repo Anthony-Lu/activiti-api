@@ -37,7 +37,7 @@ import java.util.Map;
 @RequestMapping("/workflow")
 public class WorkflowController {
 
-    private static Logger logger = LoggerFactory.getLogger(WorkflowController.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowController.class);
     @Autowired
     private WorkflowService workflowService;
     @Autowired
@@ -69,7 +69,7 @@ public class WorkflowController {
     @RequestMapping("/toDeployHome")
     @ResponseBody
     public String toDeployHome() {
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
 
         List<Deployment> deplotmentList = workflowService.findDeploymentList();
         List<ProcessDefinition> processDefinitionList = workflowService.findProcessDefinitionList();
@@ -173,7 +173,7 @@ public class WorkflowController {
         User user = (User) session.getAttribute("user");
         List<Task> list = workflowService.findTaskListByName(user.getName());
         //用fastjson序列化List<Task>会报错，因此将List<Task>中的内容复制到List<Map>中，再进行序列化
-        ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+        List<Map<String, Object>> arrayList = new ArrayList<>();
         for (Task task : list) {
             HashMap<String, Object> map = new HashMap<>();
             map.put("id", task.getId());
@@ -197,7 +197,7 @@ public class WorkflowController {
         //获取任务节点的表单key，从而决定要跳转的表单页面
         String url = workflowService.findTaskFormKeyByTaskId(taskId);
         url += "?taskId=" + taskId;
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("url", url);
         return FastJsonUtils.serializeToJSON(map);
     }
@@ -345,7 +345,6 @@ public class WorkflowController {
         ModelAndView model = new ModelAndView();
         Map<String, Integer> map = workflowService.findCoordinateByLeaveId(id);
         ProcessDefinition processDefinition = workflowService.findProcessDefinitionByLeaveId(id);
-
         model.setViewName("workflow/image");
         model.addObject("deploymentId", processDefinition.getDeploymentId());
         model.addObject("imageName", processDefinition.getDiagramResourceName());

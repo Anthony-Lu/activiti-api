@@ -1,20 +1,7 @@
 package com.fairy.activiti.api;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.zip.ZipInputStream;
-
-import org.activiti.engine.FormService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import com.fairy.activiti.util.StringUtils;
+import org.activiti.engine.*;
 import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -29,7 +16,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fairy.activiti.util.StringUtils;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.zip.ZipInputStream;
 /**
  * 
  * @author luxuebing
@@ -78,7 +73,11 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public List<Deployment> findDeploymentList() {
-		List<Deployment> list = repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list();
+		List<Deployment> list = repositoryService
+				.createDeploymentQuery()
+				.orderByDeploymenTime()
+				.asc()
+				.list();
 		return list;
 	}
 
@@ -88,7 +87,9 @@ public class ActivitiServiceImpl implements ActivitiService {
 	@Override
 	public List<ProcessDefinition> findProcessDefinitionList() {
 		List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
-				.orderByProcessDefinitionVersion().asc().list();
+				.orderByProcessDefinitionVersion()
+				.asc()
+				.list();
 		return list;
 	}
 
@@ -105,7 +106,11 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public List<Task> findTaskByAssignee(String assignee) {
-		List<Task> list = taskService.createTaskQuery().taskAssignee(assignee).orderByTaskCreateTime().asc().list();
+		List<Task> list = taskService.createTaskQuery()
+				.taskAssignee(assignee)
+				.orderByTaskCreateTime()
+				.asc()
+				.list();
 		return list;
 	}
 
@@ -114,7 +119,10 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public List<Task> findTaskByCandidateUser(String candidateUser) {
-		List<Task> list = taskService.createTaskQuery().taskCandidateUser(candidateUser).orderByTaskCreateTime().asc()
+		List<Task> list = taskService.createTaskQuery()
+				.taskCandidateUser(candidateUser)
+				.orderByTaskCreateTime()
+				.asc()
 				.list();
 		return list;
 	}
@@ -124,7 +132,10 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public List<Task> findTaskByCandidateGroup(String candidateGroup) {
-		List<Task> list = taskService.createTaskQuery().taskCandidateGroup(candidateGroup).orderByTaskCreateTime().asc()
+		List<Task> list = taskService.createTaskQuery()
+				.taskCandidateGroup(candidateGroup)
+				.orderByTaskCreateTime()
+				.asc()
 				.list();
 		return list;
 	}
@@ -167,7 +178,8 @@ public class ActivitiServiceImpl implements ActivitiService {
 	@Override
 	public boolean isFinished(String processInstanceId) {
 		ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-				.processInstanceId(processInstanceId).singleResult();
+				.processInstanceId(processInstanceId)
+				.singleResult();
 		return processInstance == null ? true : false;
 	}
 
@@ -196,15 +208,12 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public Map<String, Integer> findCoordinate(String processInstanceId) {
-		HashMap<String, Integer> map = new HashMap<>();
-
+		Map<String, Integer> map = new HashMap<>();
 		ActivityImpl activity = getActivityByInstanceId(processInstanceId);
-
 		map.put("x", activity.getX());
 		map.put("y", activity.getY());
 		map.put("height", activity.getHeight());
 		map.put("width", activity.getWidth());
-
 		return map;
 	}
 
@@ -223,9 +232,7 @@ public class ActivitiServiceImpl implements ActivitiService {
 	@Override
 	public List<String> findOutComeListByTaskId(String taskId) {
 		ArrayList<String> outComeList = new ArrayList<>();
-
 		ActivityImpl activity = getActivityByTaskId(taskId);
-
 		// 获取当前活动结束后的连线名称
 		List<PvmTransition> list = activity.getOutgoingTransitions();
 		for (PvmTransition pvmTransition : list) {
@@ -242,7 +249,8 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public ProcessInstance getProcessInstance(String processInstanceId) {
-		ProcessInstance instance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId)
+		ProcessInstance instance = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(processInstanceId)
 				.singleResult();
 		return instance;
 	}
@@ -262,7 +270,9 @@ public class ActivitiServiceImpl implements ActivitiService {
 	 */
 	@Override
 	public Task getTask(String taskId) {
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		Task task = taskService.createTaskQuery()
+				.taskId(taskId)
+				.singleResult();
 		return task;
 	}
 
@@ -273,19 +283,14 @@ public class ActivitiServiceImpl implements ActivitiService {
 	public ActivityImpl getActivityByInstanceId(String processInstanceId) {
 		// 获取流程实例对象
 		ProcessInstance processInstance = getProcessInstance(processInstanceId);
-
 		// 获取当前活动id
 		String activityId = processInstance.getActivityId();
-
 		// 获取流程定义id
 		String processDefinitionId = processInstance.getProcessDefinitionId();
-
 		// 获取流程定义实体（对应.bpmn文件）
 		ProcessDefinitionEntity processDefinitionEntity = getProcessDefinitionEntity(processDefinitionId);
-
 		// 获取当前活动对象
 		ActivityImpl activity = processDefinitionEntity.findActivity(activityId);
-
 		return activity;
 	}
 
@@ -296,25 +301,18 @@ public class ActivitiServiceImpl implements ActivitiService {
 	public ActivityImpl getActivityByTaskId(String taskId) {
 		// 通过任务id获取任务对象
 		Task task = getTask(taskId);
-
 		// 通过任务对象获取流程定义id
 		String processDefinitionId = task.getProcessDefinitionId();
-
 		// 通过任务对象获取流程实例id
 		String processInstanceId = task.getProcessInstanceId();
-
 		// 通过流程实例id获取流程实例对象
 		ProcessInstance processInstance = getProcessInstance(processInstanceId);
-
 		// 通过流程实例对象获取当前活动id
 		String activityId = processInstance.getActivityId();
-
 		// 通过流程定义id获取流程定义实体（对应.bpmn文件）
 		ProcessDefinitionEntity processDefinitionEntity = getProcessDefinitionEntity(processDefinitionId);
-
 		// 通过当前活动id获取当前活动对象
 		ActivityImpl activity = processDefinitionEntity.findActivity(activityId);
-
 		return activity;
 	}
 }
