@@ -39,7 +39,7 @@ import java.util.Map;
 @RequestMapping("/workflow")
 public class WorkflowController {
 
-    private static Logger logger = LoggerFactory.getLogger(WorkflowController.class);
+    private static final Logger logger = LoggerFactory.getLogger(WorkflowController.class);
     @Autowired
     private WorkflowService workflowService;
     @Autowired
@@ -190,7 +190,7 @@ public class WorkflowController {
         //获取任务节点的表单key，从而决定要跳转的表单页面
         String url = workflowService.findTaskFormKeyByTaskId(taskId);
         url += "?taskId=" + taskId;
-        HashMap<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("url", url);
         return FastJsonUtils.serializeToJSON(map);
     }

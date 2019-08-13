@@ -25,7 +25,7 @@ import com.fairy.activiti.util.FastJsonUtils;
 @RequestMapping("/leaveBill")
 public class LeaveBillController {
 
-	public static Logger logger = LoggerFactory.getLogger(LeaveBillController.class);
+	public static final Logger logger = LoggerFactory.getLogger(LeaveBillController.class);
 	@Autowired
 	private LeaveBillService service;
 
