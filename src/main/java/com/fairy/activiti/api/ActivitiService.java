@@ -24,7 +24,7 @@ public interface ActivitiService {
      * @param file
      * @param fileName
      */
-    void deployProcessByZip(File file, String fileName);
+    void deployProcessByZip(File file, String fileName) throws Exception;
 
     /**
      * 删除流程定义
@@ -125,7 +125,7 @@ public interface ActivitiService {
     /**
      * 根据当前任务id查询该任务的历史批注
      *
-     * @param processInstanceId
+     * @param taskId
      * @return
      */
     List<Comment> findComments(String taskId);

@@ -2,7 +2,9 @@ package com.fairy.activiti.controller;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import com.google.common.collect.Maps;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,13 +65,12 @@ public class LeaveBillController {
 	@ResponseBody
 	@RequestMapping("/saveBill")
 	public String saveBill(LeaveBill bill) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = Maps.newHashMap();
 		try {
 			service.saveLeaveBill(bill);
 			map.put("success", true);
 		} catch (Exception e) {
 			logger.error("保存请假申请异常", e);
-			e.printStackTrace();
 		}
 		return FastJsonUtils.serializeToJSON(map);
 	}
@@ -83,13 +84,12 @@ public class LeaveBillController {
 	@ResponseBody
 	@RequestMapping("/deleteBill")
 	public String deleteBill(String id) {
-		HashMap<String, Object> map = new HashMap<>();
+		Map<String, Object> map = Maps.newHashMap();
 		try {
 			service.deleteLeaveBillById(id);
 			map.put("success", true);
 		} catch (Exception e) {
 			logger.error("删除请假申请异常" , e);
-			e.printStackTrace();
 		}
 		return FastJsonUtils.serializeToJSON(map);
 	}

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fairy.activiti.entity.User;
 import com.fairy.activiti.service.UserService;
 
+import java.util.Objects;
+
 /**
  * 
  * @author luxuebing
@@ -20,7 +22,6 @@ import com.fairy.activiti.service.UserService;
 @Controller
 @RequestMapping("/user")
 public class UserController {
-	
 	@Autowired
 	private UserService userService;
 	
@@ -42,7 +43,7 @@ public class UserController {
 	@RequestMapping("/login")
 	public String login(String name,HttpSession session) {
 		User user = userService.login(name);
-		if(null != user) {
+		if(!Objects.isNull(user)) {
 			session.setAttribute("user",user);
 			return "main";
 		}

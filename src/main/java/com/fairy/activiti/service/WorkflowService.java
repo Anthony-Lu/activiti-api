@@ -15,7 +15,7 @@ import com.fairy.activiti.entity.LeaveBill;
 
 public interface WorkflowService {
 
-	void saveNewDeploye(File file, String filename);
+	void saveNewDeploye(File file, String filename) throws Exception;
 
 	List<Deployment> findDeploymentList();
 

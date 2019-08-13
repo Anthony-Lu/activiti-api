@@ -6,6 +6,8 @@ import com.fairy.activiti.entity.User;
 import com.fairy.activiti.service.LeaveBillService;
 import com.fairy.activiti.service.WorkflowService;
 import com.fairy.activiti.util.FastJsonUtils;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.Comment;
@@ -69,14 +71,11 @@ public class WorkflowController {
     @RequestMapping("/toDeployHome")
     @ResponseBody
     public String toDeployHome() {
-        HashMap<String, Object> map = new HashMap<>();
-
+        Map<String, Object> map = Maps.newHashMap();
         List<Deployment> deplotmentList = workflowService.findDeploymentList();
         List<ProcessDefinition> processDefinitionList = workflowService.findProcessDefinitionList();
-
         map.put("processDefinitionList", processDefinitionList);
         map.put("deplotmentList", deplotmentList);
-
         return FastJsonUtils.serializeToJSON(map);
     }
 
@@ -91,14 +90,11 @@ public class WorkflowController {
     @RequestMapping("/deploy")
     public String deploy(MultipartFile myProcessFile) {
         logger.info("开始部署名为{}的流程定义", myProcessFile.getName());
-
         CommonsMultipartFile cf = (CommonsMultipartFile) myProcessFile;
         DiskFileItem fi = (DiskFileItem) cf.getFileItem();
         File file = fi.getStoreLocation();
         //手动创建临时文件  
-        File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") +
-                file.getName());
-        //System.out.println(tmpFile.toString());
+        File tmpFile = new File(System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + file.getName());
         try {
             myProcessFile.transferTo(tmpFile);
             workflowService.saveNewDeploye(tmpFile, myProcessFile.getName());
@@ -133,8 +129,6 @@ public class WorkflowController {
      */
     @RequestMapping("/viewImg")
     public String viewImg(String deploymentId, String imgName, HttpServletRequest request, HttpServletResponse resp) {
-        //InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
-        //OutputStream outputStream = null ;
         int len = 0;
         byte[] b = new byte[1024];
         try (InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
@@ -144,7 +138,6 @@ public class WorkflowController {
             }
         } catch (IOException e) {
             logger.error("读取流程图片异常", e);
-            e.printStackTrace();
         }
         return null;
     }
@@ -173,9 +166,9 @@ public class WorkflowController {
         User user = (User) session.getAttribute("user");
         List<Task> list = workflowService.findTaskListByName(user.getName());
         //用fastjson序列化List<Task>会报错，因此将List<Task>中的内容复制到List<Map>中，再进行序列化
-        ArrayList<Map<String, Object>> arrayList = new ArrayList<>();
+        List<Map<String, Object>> arrayList = Lists.newArrayList();
         for (Task task : list) {
-            HashMap<String, Object> map = new HashMap<>();
+            Map<String, Object> map = Maps.newHashMap();
             map.put("id", task.getId());
             map.put("name", task.getName());
             map.put("assignee", task.getAssignee());
@@ -215,21 +208,16 @@ public class WorkflowController {
     public ModelAndView audit(String taskId) {
         //根据任务id，获取请假单id，从而获取请假单信息
         LeaveBill leaveBill = workflowService.findLeaveBillByTaskId(taskId);
-
         ModelAndView mm = new ModelAndView();
-
         //根据任务id获取流程定义实体对象，从而获取当前任务完成之后的连线名称
         List<String> outcomeList = workflowService.findOutComeListByTaskId(taskId);
-
         //根据任务id查询所有历史审批信息，帮助当前审批人完成审批
         List<Comment> commentList = workflowService.findCommentByTaskId(taskId);
-
         mm.setViewName("workflow/taskForm");
         mm.addObject("taskId", taskId);
         mm.addObject("leaveBill", leaveBill);
         mm.addObject("outcomeList", outcomeList);
         mm.addObject("commentList", commentList);
-
         return mm;
     }
 
@@ -254,10 +242,8 @@ public class WorkflowController {
      */
     @RequestMapping("/showImg")
     public String showImg(String leaveBillId, HttpServletResponse response) {
-
         InputStream inputStream = workflowService.findImageInputStream(leaveBillId);
         OutputStream outputStream = null;
-
         byte[] b = new byte[1024];
         int len = -1;
         try {
@@ -267,14 +253,12 @@ public class WorkflowController {
             }
         } catch (IOException e) {
             logger.error("读取流程图片出错", e);
-            e.printStackTrace();
         } finally {
             try {
                 outputStream.close();
                 inputStream.close();
             } catch (IOException e) {
                 logger.error("读取流程图片出错", e);
-                e.printStackTrace();
             }
         }
         return null;
@@ -292,12 +276,10 @@ public class WorkflowController {
         ProcessDefinition processDefinition = workflowService.findProcessDefinitionByTaskId(taskId);
         //获取当前活动节点的坐标
         Map<String, Integer> CoordinateMap = workflowService.findCoordinateByTask(taskId);
-
         mm.setViewName("workflow/image");
         mm.addObject("deploymentId", processDefinition.getDeploymentId());
         mm.addObject("imageName", processDefinition.getDiagramResourceName());
         mm.addObject("coordinate", CoordinateMap);
-
         return mm;
     }
 
@@ -315,7 +297,7 @@ public class WorkflowController {
     @ResponseBody
     @RequestMapping("/viewHisComment")
     public String viewHisComment(String leaveBillId) {
-        HashMap<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = Maps.newHashMap();
         List<Comment> commentList = workflowService.findCommentByLeaveBillId(leaveBillId);
         LeaveBill leaveBill = leaveBillService.findLeaveBillById(leaveBillId);
         map.put("commentList", commentList);
@@ -341,17 +323,13 @@ public class WorkflowController {
      */
     @RequestMapping("/getCurrentTaskByLeaveId")
     public ModelAndView getCurrentTaskByLeaveId(String id) {
-        id = "4";
         ModelAndView model = new ModelAndView();
         Map<String, Integer> map = workflowService.findCoordinateByLeaveId(id);
         ProcessDefinition processDefinition = workflowService.findProcessDefinitionByLeaveId(id);
-
         model.setViewName("workflow/image");
         model.addObject("deploymentId", processDefinition.getDeploymentId());
         model.addObject("imageName", processDefinition.getDiagramResourceName());
         model.addObject("coordinate", map);
-
         return model;
     }
-
 }

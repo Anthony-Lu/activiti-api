@@ -10,13 +10,11 @@ import com.fairy.activiti.service.UserService;
 
 @Service
 public class UserServiceImpl implements UserService {
-
 	@Autowired
 	private UserDao userDao;
 	@Override
 	public User login(String name) {
 		return userDao.findUserByName(name);
-		
 	}
 	@Override
 	public User getManagerId(String userId) {
