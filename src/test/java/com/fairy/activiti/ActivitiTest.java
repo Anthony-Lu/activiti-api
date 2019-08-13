@@ -21,7 +21,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 import java.util.zip.ZipInputStream;
@@ -261,7 +263,6 @@ public class ActivitiTest {
         //更新请假单状态从0变成1 表示审核中
         leaveBill.setState(LeaveBillConstant.AUDIT_ING);
         leaveBillDao.updateLeaveBill(leaveBill);
-<<<<<<< HEAD
         Map<String, Object> variables = Maps.newHashMap();
         //从session中取出当前登录人，设置为提交申请任务的办理人
         identityService.setAuthenticatedUserId("范冰冰");
