@@ -30,7 +30,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,7 +37,6 @@ import java.util.Map;
 @Controller
 @RequestMapping("/workflow")
 public class WorkflowController {
-
     private static final Logger logger = LoggerFactory.getLogger(WorkflowController.class);
     @Autowired
     private WorkflowService workflowService;
@@ -129,7 +127,7 @@ public class WorkflowController {
      */
     @RequestMapping("/viewImg")
     public String viewImg(String deploymentId, String imgName, HttpServletRequest request, HttpServletResponse resp) {
-        int len = 0;
+        int len;
         byte[] b = new byte[1024];
         try (InputStream inputStream = workflowService.findImageInputStream(deploymentId, imgName);
              OutputStream outputStream = resp.getOutputStream()) {
@@ -245,7 +243,7 @@ public class WorkflowController {
         InputStream inputStream = workflowService.findImageInputStream(leaveBillId);
         OutputStream outputStream = null;
         byte[] b = new byte[1024];
-        int len = -1;
+        int len;
         try {
             outputStream = response.getOutputStream();
             while ((len = inputStream.read(b)) != -1) {

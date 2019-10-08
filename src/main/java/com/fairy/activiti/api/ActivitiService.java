@@ -30,7 +30,8 @@ public interface ActivitiService {
      * 删除流程定义
      *
      * @param deploymentId
-     * @param flag         为true时表示级联删除，会删除掉和当前部署的规则相关的信息，包括历史信息；否则为普通删除，如果当前部署的规则还存在正在制作的流程，会抛异常。
+     * @param flag         为true时表示级联删除，会删除掉和当前部署的规则相关的信息，包括历史信息；
+     *                     否则为普通删除，如果当前部署的规则还存在正在制作的流程，会抛异常。
      */
     void deleteProcessDefinition(String deploymentId, boolean flag);
 

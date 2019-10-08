@@ -13,14 +13,11 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +30,6 @@ import java.util.zip.ZipInputStream;
  */
 @Service
 public class ActivitiServiceImpl implements ActivitiService {
-    private static final Logger logger = LoggerFactory.getLogger(ActivitiServiceImpl.class);
     @Autowired
     private RepositoryService repositoryService;
     @Autowired
@@ -67,11 +63,11 @@ public class ActivitiServiceImpl implements ActivitiService {
      */
     @Override
     public List<Deployment> findDeploymentList() {
-        List<Deployment> list = repositoryService.createDeploymentQuery()
+        return repositoryService.createDeploymentQuery()
                 .orderByDeploymenTime()
                 .asc()
                 .list();
-        return list;
+
     }
 
     /**
@@ -79,11 +75,10 @@ public class ActivitiServiceImpl implements ActivitiService {
      */
     @Override
     public List<ProcessDefinition> findProcessDefinitionList() {
-        List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery()
+        return repositoryService.createProcessDefinitionQuery()
                 .orderByProcessDefinitionVersion()
                 .asc()
                 .list();
-        return list;
     }
 
     /**
@@ -99,12 +94,11 @@ public class ActivitiServiceImpl implements ActivitiService {
      */
     @Override
     public List<Task> findTaskByAssignee(String assignee) {
-        List<Task> list = taskService.createTaskQuery()
+        return taskService.createTaskQuery()
                 .taskAssignee(assignee)
                 .orderByTaskCreateTime()
                 .asc()
                 .list();
-        return list;
     }
 
     /**
@@ -112,12 +106,11 @@ public class ActivitiServiceImpl implements ActivitiService {
      */
     @Override
     public List<Task> findTaskByCandidateUser(String candidateUser) {
-        List<Task> list = taskService.createTaskQuery()
+        return taskService.createTaskQuery()
                 .taskCandidateUser(candidateUser)
                 .orderByTaskCreateTime()
                 .asc()
                 .list();
-        return list;
     }
 
     /**
@@ -125,12 +118,11 @@ public class ActivitiServiceImpl implements ActivitiService {
      */
     @Override
     public List<Task> findTaskByCandidateGroup(String candidateGroup) {
-        List<Task> list = taskService.createTaskQuery()
+        return taskService.createTaskQuery()
                 .taskCandidateGroup(candidateGroup)
                 .orderByTaskCreateTime()
                 .asc()
                 .list();
-        return list;
     }
 
     /**
@@ -275,8 +267,7 @@ public class ActivitiServiceImpl implements ActivitiService {
         // 获取流程定义实体（对应.bpmn文件）
         ProcessDefinitionEntity processDefinitionEntity = getProcessDefinitionEntity(processDefinitionId);
         // 获取当前活动对象
-        ActivityImpl activity = processDefinitionEntity.findActivity(activityId);
-        return activity;
+        return processDefinitionEntity.findActivity(activityId);
     }
 
     /**
@@ -297,7 +288,6 @@ public class ActivitiServiceImpl implements ActivitiService {
         // 通过流程定义id获取流程定义实体（对应.bpmn文件）
         ProcessDefinitionEntity processDefinitionEntity = getProcessDefinitionEntity(processDefinitionId);
         // 通过当前活动id获取当前活动对象
-        ActivityImpl activity = processDefinitionEntity.findActivity(activityId);
-        return activity;
+        return processDefinitionEntity.findActivity(activityId);
     }
 }

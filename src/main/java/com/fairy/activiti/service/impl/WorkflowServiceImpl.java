@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,8 +73,7 @@ public class WorkflowServiceImpl implements WorkflowService {
      */
     @Override
     public List<Deployment> findDeploymentList() {
-        List<Deployment> list = repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list();
-        return list;
+        return repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list();
     }
 
     /**
@@ -84,12 +82,11 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public List<ProcessDefinition> findProcessDefinitionList() {
         // 根据版本号升序排列
-        List<ProcessDefinition> list = repositoryService
+        return repositoryService
                 .createProcessDefinitionQuery()
                 .orderByProcessDefinitionVersion()
                 .asc()
                 .list();
-        return list;
     }
 
     /**
@@ -139,8 +136,7 @@ public class WorkflowServiceImpl implements WorkflowService {
      */
     @Override
     public List<Task> findTaskListByName(String name) {
-        List<Task> list = taskService.createTaskQuery().taskAssignee(name).orderByTaskCreateTime().asc().list();
-        return list;
+        return taskService.createTaskQuery().taskAssignee(name).orderByTaskCreateTime().asc().list();
     }
 
     /**
@@ -149,8 +145,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     @Override
     public String findTaskFormKeyByTaskId(String taskId) {
         TaskFormData formData = formService.getTaskFormData(taskId);
-        String url = formData.getFormKey();
-        return url;
+        return formData.getFormKey();
     }
 
     /**
@@ -168,8 +163,7 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .singleResult()
                 .getBusinessKey();
         // 通过id查询请假单实体
-        LeaveBill leaveBill = leaveBillDao.findLeaveBillById(businessKey);
-        return leaveBill;
+        return leaveBillDao.findLeaveBillById(businessKey);
     }
 
     /**
@@ -261,8 +255,7 @@ public class WorkflowServiceImpl implements WorkflowService {
     public List<Comment> findCommentByTaskId(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processInstanceId = task.getProcessInstanceId();
-        List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId);
-        return comments;
+        return taskService.getProcessInstanceComments(processInstanceId);
     }
 
     /**
@@ -274,8 +267,7 @@ public class WorkflowServiceImpl implements WorkflowService {
                 .processInstanceBusinessKey(id)
                 .singleResult();
         String processInstanceId = hpi.getId();
-        List<Comment> comments = taskService.getProcessInstanceComments(processInstanceId);
-        return comments;
+        return taskService.getProcessInstanceComments(processInstanceId);
     }
 
     /**
@@ -285,10 +277,9 @@ public class WorkflowServiceImpl implements WorkflowService {
     public ProcessDefinition findProcessDefinitionByTaskId(String taskId) {
         Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
         String processDefinitionId = task.getProcessDefinitionId();
-        ProcessDefinition pd = repositoryService.createProcessDefinitionQuery()
+        return repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(processDefinitionId)
                 .singleResult();
-        return pd;
     }
 
     /**
@@ -327,8 +318,7 @@ public class WorkflowServiceImpl implements WorkflowService {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
                 .processDefinitionId(processDefinitionId)
                 .singleResult();
-        InputStream stream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());
-        return stream;
+        return repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());
     }
 
     /**
@@ -336,7 +326,6 @@ public class WorkflowServiceImpl implements WorkflowService {
      */
     @Override
     public Map<String, Integer> findCoordinateByLeaveId(String leaveId) {
-
         ActivityImpl act = null;
         ProcessInstance instance = runtimeService.createProcessInstanceQuery()
                 .processInstanceBusinessKey(leaveId)
